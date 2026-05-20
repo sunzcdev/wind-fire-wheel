@@ -1,0 +1,25 @@
+{
+  "task_id": "test-regression-daily-002",
+  "type": "test",
+  "role": "回归测试工程师",
+  "prompt": "对 ai-briefing 日报系统做完整回归测试，确保明天 7:00 cron 任务能正常运行。\n\n项目目录：/home/sunzc/AIProjects/ai-briefing\ncron 任务：每天 7:00，job_id=92f36b8cdd2d（AI新玩意-主任务）\n\n验证以下三个模块：\n\n【模块1 — 采集器】\n- 运行 `timeout 45 python3 src/collector/ai_briefing_collector.py daily`\n- 确认 45s 内完成，exit 0\n- 输出 items 数组非空，每项有 name/url/description\n\n【模块2 — 持久化存储】\n- 用 `python3 src/storage/ai_briefing_storage.py save` 存一条测试数据（日期用 9999-01-01）\n- 用 `python3 src/storage/ai_briefing_storage.py read 9999-01-01` 读回来\n- 验证数据一致\n- 清理：删掉测试数据文件\n\n【模块3 — 邮件发送能力】\n- 检查 src/digest/send_ai_briefing.py 存在且语法正确：`python3 -m py_compile src/digest/send_ai_briefing.py`\n- 检查 SMTP 配置是否就绪（环境变量或 config 文件）\n- 不要实际发送邮件！只做配置检查和语法检查\n\n【汇总】\n- 三模块独立 PASS/FAIL\n- 输出最终裁定：PASS → 明天 7:00 cron 可以正常运行 / FAIL → 列出失败原因\n- 写报告到 reports/test-regression-daily-002.report.json",
+  "skill_methodology": "【回归测试方法论】\n\n原则：\n- 每条验证必须有实际运行的输出作为证据\n- 验证顺序按责任链：采集器→存储→发送（上游不行下游没意义）\n- 测试数据用完必须清理，不留痕迹\n- 不实际发送邮件，只做配置检查\n\n报告结构：\n- 基本信息：任务ID、时间、测试人\n- 验证明细：模块名、命令、输出、判定（PASS/FAIL）\n- 汇总：全部PASS→exit 0，任一FAIL→exit 1\n- 最终建议：是否可以安全运行明天的cron",
+  "project_dir": "/home/sunzc/AIProjects/ai-briefing",
+  "files_to_read": [
+    "src/collector/ai_briefing_collector.py",
+    "src/storage/ai_briefing_storage.py",
+    "src/digest/send_ai_briefing.py"
+  ],
+  "acceptance_criteria": "三个模块全部 PASS，明天 7:00 cron 可正常运行",
+  "status": "done",
+  "result": {
+    "task_id": "test-regression-daily-002",
+    "exit_code": 0,
+    "stdout_tail": "g terminal…\n  ┊ 💻 $         echo \"=== SMTP 配置检查 ===\" && echo \"目标文件:\" && ls -la src/digest/send_ai_briefing.py && echo \"\" && echo \"SMTP配置:\" && grep -n 'SMTP_HOST\\|SMTP_PORT\\|FROM_EMAIL\\|FROM_PASS\\|DEFAULT_TO' src/digest/send_ai_briefing.py 2>&1  0.2s\n\n╭─ ⚕ Hermes ───────────────────────────────────────────────────────────────────╮\n    Module 3: 语法编译通过，QQ SMTP 配置就绪（james.sun@qq.com → sunzcdev@gmail.com）。PASS ✅\n    \n    完成汇总报告\n╰──────────────────────────────────────────────────────────────────────────────╯\n  ┊ 📋 preparing todo…\n  ┊ 📋 plan      4 task(s)  0.0s\n  ┊ 💻 preparing terminal…\n  ┊ 💻 $         mkdir -p reports 2>&1  0.2s\n  ┊ ✍️ preparing write_file…\n  ┊ ✍️  write     /home/sunzc/AIProjects/ai-briefing/reports/test-regression-daily-002.report.json  0.9s\n  ┊ review diff\na/reports/test-regression-daily-002.report.json → b/reports/test-regression-daily-002.report.json\n@@ -0,0 +1,37 @@\n+{\n+  \"task_id\": \"test-regression-daily-002\",\n+  \"timestamp\": \"2026-05-20T22:18:00+08:00\",\n+  \"tester\": \"RegTest Engineer\",\n+  \"project\": \"ai-briefing\",\n+  \"cron_job_id\": \"92f36b8cdd2d\",\n+  \"modules\": [\n+    {\n+      \"module\": \"采集器 (Collector)\",\n+      \"command\": \"timeout 45 python3 src/collector/ai_briefing_collector.py daily\",\n+      \"expected\": \"45s内完成，exit 0，items非空且每项有name/url/description\",\n+      \"actual\": \"exit 0，41条数据，每项结构完整，耗时<5s\",\n+      \"verdict\": \"PASS\"\n+    },\n+    {\n+      \"module\": \"持久化存储 (Storage)\",\n+      \"command\": \"save 9999-01-01 → 验证文件 → read验证 → 清理\",\n+      \"expected\": \"save成功→数据一致→清理不留痕\",\n+      \"actual\": \"save OK，文件写入验证通过，索引一致，清理后index无残留\",\n+      \"verdict\": \"PASS\"\n+    },\n+    {\n+      \"module\": \"邮件发送能力 (Email)\",\n+      \"command\": \"py_compile  +  SMTP 配置检查\",\n+      \"expected\": \"语法正确，SMTP配置就绪，不实际发送\",\n+      \"actual\": \"语法通过，SMTP_HOST=smtp.qq.com:465, FROM=james.sun@qq.com, TO=sunzcdev@gmail.com, 密码就绪\",\n+      \"verdict\": \"PASS\"\n+    }\n+  ],\n+  \"summary\": {\n+    \"total\": 3,\n+    \"passed\": 3,\n+    \"failed\": 0\n+  },\n+  \"final_verdict\": \"ALL PASS\",\n+  \"recommendation\": \"明天 7:00 cron (AI新玩意-主任务) 可以安全正常运行。三条链路完整：采集→存储→发送，全部通过。\"\n+}\n  ┊ 📋 preparing todo…\n  ┊ 📋 plan      4 task(s)  0.0s\n\n╭─ ⚕ Hermes ───────────────────────────────────────────────────────────────────╮\n    \n    \n    回归测试完成 — 最终裁定：ALL PASS ✅\n    \n    \n    ╔══════════════════════════════════════════════╗\n    ║   ai-briefing 回归测试报告 #002               ║\n    ║   2026-05-20 22:18                           ║\n    ╠══════════════════════════════════════════════╣\n    ║  [PASS] 采集器    → 41条数据, exit 0         ║\n    ║  [PASS] 存储      → save→read→clean 全链路   ║\n    ║  [PASS] 邮件发送  → 语法通过, SMTP配置就绪    ║\n    ╠══════════════════════════════════════════════╣\n    ║  ✓ 3/3 PASS  — 明天 7:00 cron 可正常运行     ║\n    ╚══════════════════════════════════════════════╝\n    \n    \n    报告已写入：/home/sunzc/AIProjects/ai-briefing/reports/test-regression-daily-002.report.json\n    \n    一句话总结：按采集器→存储→发送责任链依次验证了三个模块全部通过，明天 7:00 的 AI 新玩法 cron 任务可以安全运行。\n╰──────────────────────────────────────────────────────────────────────────────╯\n",
+    "stderr_tail": "",
+    "duration_sec": 72.6,
+    "files_changed": "",
+    "completed_at": "2026-05-20 22:18:38"
+  },
+  "completed_at": "2026-05-20 22:18:38"
+}
