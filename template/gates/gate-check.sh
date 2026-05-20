@@ -11,6 +11,7 @@ usage() {
 
 INSTANCE_DIR="$(realpath "$1")"
 GATE="$2"
+TEAM_JSON="$INSTANCE_DIR/team.json"
 
 check_requirement() {
     local req_dir="$INSTANCE_DIR/docs"
@@ -83,19 +84,54 @@ check_implementation() {
 }
 
 check_verification() {
-    local test_found=0
-    while IFS= read -r -d '' f; do
-        test_found=1
-        break
-    done < <(find "$INSTANCE_DIR" \( -name "*_test.*" -o -name "test_*.*" -o -name "*.spec.*" \) -not -path "*/.git/*" -print0 2>/dev/null)
+    local project_dir
+    project_dir="$(python3 -c "import json; d=json.load(open('$TEAM_JSON')); print(d.get('project_dir',''))" 2>/dev/null || echo "")"
+    local search_dirs=("$INSTANCE_DIR")
+    [[ -n "$project_dir" && -d "$project_dir" ]] && search_dirs+=("$project_dir")
 
-    if [[ "$test_found" -eq 0 ]]; then
+    local test_files=()
+    local last_fail=""
+
+    # 找测试文件
+    while IFS= read -r -d '' f; do
+        test_files+=("$f")
+    done < <(find "${search_dirs[@]}" \( -name "*_test.*" -o -name "test_*.*" -o -name "*.spec.*" \) -not -path "*/.git/*" -print0 2>/dev/null)
+
+    if [[ "${#test_files[@]}" -eq 0 ]]; then
         echo "[gate-check] FAIL verification: no test files found"
         echo "[gate-check] Expected: *_test.*, test_*.*, or *.spec.*"
         return 1
     fi
 
-    echo "[gate-check] OK verification: test files found"
+    echo "[gate-check] OK verification: ${#test_files[@]} test file(s) found"
+
+    # 跑测试
+    for tf in "${test_files[@]}"; do
+        if [[ -x "$tf" && "$(head -1 "$tf")" == "#!/"* ]]; then
+            # 可执行脚本测试
+            local test_out
+            test_out=$(timeout 30 bash "$tf" 2>&1) || {
+                echo "[gate-check] FAIL test: $tf"
+                echo "$test_out" | sed 's/^/  /'
+                last_fail="$tf"
+            }
+        elif [[ "$tf" == *.sh ]]; then
+            # 不可执行但 .sh → 用 bash 跑
+            local test_out
+            test_out=$(timeout 30 bash "$tf" 2>&1) || {
+                echo "[gate-check] FAIL test: $tf"
+                echo "$test_out" | sed 's/^/  /'
+                last_fail="$tf"
+            }
+        fi
+    done
+
+    if [[ -n "$last_fail" ]]; then
+        echo "[gate-check] FAIL verification: tests did not pass"
+        return 1
+    fi
+
+    echo "[gate-check] OK verification: all tests passed"
 }
 
 check_delivery() {
