@@ -1,0 +1,54 @@
+{
+  "project": "solo-coder-pipeline",
+  "poll_interval": 15,
+  "gate_timeout": 90,
+  "max_restarts": 3,
+  "report_to_pm": true,
+  "checks": [
+    {
+      "name": "daemon",
+      "type": "process",
+      "process_name": "main.py",
+      "max_fails_before_report": 2,
+      "restart_cmd": "cd ~/AIProjects/solo-code-pipline && python3 main.py start 40650 \"Feature迭代\" &"
+    },
+    {
+      "name": "trae",
+      "type": "process",
+      "process_name": "trae-cn",
+      "max_fails_before_report": 2,
+      "restart_cmd": "trae-cn &"
+    },
+    {
+      "name": "cdp_port",
+      "type": "process",
+      "process_name": "9229.*trae-cn",
+      "max_fails_before_report": 2,
+      "restart_cmd": ""
+    },
+    {
+      "name": "gate_progress",
+      "type": "gate",
+      "context_file": "/home/sunzc/AIProjects/solo-code-pipline/context.json",
+      "gate_timeout": 90,
+      "recovery_level": "P1",
+      "max_fails_before_report": 2,
+      "daemon_cmd": "cd ~/AIProjects/solo-code-pipline && python3 main.py start 40650 \"Feature迭代\" &"
+    },
+    {
+      "name": "disk",
+      "type": "disk",
+      "disk_threshold": 85,
+      "disk_path": "/",
+      "cleanup_cmd": "find ~/.hermes/cache/ -mtime +3 -delete 2>/dev/null; find ~/.hermes/data/solo-coder/ -mtime +7 -delete 2>/dev/null",
+      "max_fails_before_report": 2
+    },
+    {
+      "name": "deepseek_key",
+      "type": "api_key",
+      "env_file": "/home/sunzc/.hermes/.env",
+      "key_name": "DEEPSEEK_API_KEY",
+      "max_fails_before_report": 2
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "project": "ai-briefing",
+  "poll_interval": 300,
+  "gate_timeout": 86400,
+  "max_restarts": 1,
+  "report_to_pm": true,
+  "checks": [
+    {
+      "name": "data_freshness",
+      "type": "gate",
+      "context_file": "/home/sunzc/.hermes/data/ai_briefing/last_run.json",
+      "gate_timeout": 86400,
+      "recovery_level": "P2",
+      "max_fails_before_report": 2,
+      "daemon_cmd": ""
+    },
+    {
+      "name": "disk",
+      "type": "disk",
+      "disk_threshold": 85,
+      "disk_path": "/",
+      "cleanup_cmd": "find ~/.hermes/data/ai_briefing/ -mtime +30 -delete 2>/dev/null",
+      "max_fails_before_report": 2
+    },
+    {
+      "name": "network",
+      "type": "process",
+      "process_name": "socks.*1081",
+      "max_fails_before_report": 3,
+      "restart_cmd": ""
+    }
+  ]
+}

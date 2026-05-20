@@ -1,0 +1,29 @@
+{
+  "template_version": "1.0.0",
+  "project_name": "solo-coder-pipeline",
+  "project_type": "pipeline",
+  "status": "idle",
+  "description": "Solo Coder 标注流水线 — Trae CDP 自动化注入→执行→提取→提交 全链路",
+  "members": {
+    "po": {"id": "孙振朝", "name": "孙振朝", "contact": "微信/飞书"},
+    "pm": {"id": "hermes", "name": "Hermes", "contact": "微信"},
+    "dev": {"id": "CC", "name": "Claude Code / OpenCode", "contact": "terminal"},
+    "test": {"id": "自动化测试", "name": "Test Agent", "contact": "terminal background"},
+    "ops": {"id": "hermes", "name": "Hermes (Ops)", "contact": "cron + systemd"}
+  },
+  "project_info": {
+    "work_dir": "~/AIProjects/solo-code-pipline/",
+    "target_project": "~/AIProjects/solo-coder-mark/",
+    "data_dir": "~/.hermes/data/solo-coder/",
+    "config": "~/AIProjects/solo-code-pipline/config.yaml",
+    "state_file": "~/AIProjects/solo-code-pipline/context.json",
+    "feishu_group": "Solo Coder 流水线 (飞书)",
+    "bitable_app_token": "HO1Kb3JQpa9e0WsHhQ0c2dpLnYb",
+    "bitable_table_id": "tblfVRXx3qotQ4mO",
+    "uid": 40650
+  },
+  "current_gate": null,
+  "current_task": null,
+  "team_name": "无敌风火轮",
+  "created_at": "2026-05-20T13:45:00+08:00"
+}
