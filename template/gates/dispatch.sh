@@ -19,7 +19,9 @@ TEAM_JSON="$INSTANCE_DIR/team.json"
 GATE_ORDER=("requirement" "design" "implementation" "verification" "delivery")
 
 current_gate() {
-    python3 -c "import json,sys; d=json.load(open('$TEAM_JSON')); print(d.get('current_gate','requirement'))"
+    local val
+    val=$(python3 -c "import json,sys; d=json.load(open('$TEAM_JSON')); v=d.get('current_gate'); print(v if v and v != 'None' else 'requirement')")
+    echo "$val"
 }
 
 set_gate() {

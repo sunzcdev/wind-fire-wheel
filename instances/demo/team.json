@@ -1,0 +1,30 @@
+{
+  "template_version": "1.0.0",
+  "project_name": "demo",
+  "status": "active",
+  "project_dir": "/home/sunzc/temp/demo-project",
+  "members": {
+    "po": {
+      "id": "sunzc",
+      "name": "孙振朝"
+    },
+    "pm": {
+      "id": "hermes",
+      "name": "Hermes"
+    },
+    "dev": {
+      "id": "cc",
+      "name": "CC"
+    },
+    "test": {
+      "id": "automation",
+      "name": "Automation Test"
+    },
+    "ops": {
+      "id": "hermes",
+      "name": "Hermes (Ops)"
+    }
+  },
+  "current_gate": "delivered",
+  "created_at": "2026-05-20"
+}

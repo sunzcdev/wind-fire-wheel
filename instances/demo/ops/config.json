@@ -1,0 +1,8 @@
+{
+  "project": "__PROJECT_NAME__",
+  "poll_interval": 30,
+  "gate_timeout": 120,
+  "max_restarts": 3,
+  "report_to_pm": true,
+  "checks": []
+}
