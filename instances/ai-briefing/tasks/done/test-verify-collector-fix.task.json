@@ -1,0 +1,23 @@
+{
+  "task_id": "test-verify-collector-fix",
+  "type": "test",
+  "role": "质量测试工程师",
+  "prompt": "验证采集器超时修复是否有效，出测试报告。\n\n验证步骤：\n1. 运行 `timeout 45 python3 src/collector/ai_briefing_collector.py weekly` — 必须在 45s 内完成\n2. 运行 `timeout 30 python3 src/collector/ai_briefing_collector.py daily` — 必须在 30s 内完成\n3. 检查输出，确认返回的 items 数组不为空，每项有 name、url、description 字段\n4. 输出来源分布统计（GitHub 几条、Reddit 几条等）\n\n每条验证都必须有实际运行的日志输出作为证据。\n\n如果全部 PASS，写一份测试报告到 reports/test-verify-collector-001.report.json（JSON格式，含每步结果、运行时间、证据日志）。\n如果任一 FAIL，exit 1 并说明失败细节。",
+  "skill_methodology": "【测试证据收集方法论】\n\n关键原则：\n- 没有日志的测试结论不采纳\n- 每条验证必须附带实际运行的输出证据\n- 复现步骤精确到命令\n- PASS/FAIL 判定基于证据，不是猜\n\n报告格式：\n- 基本信息：测试 ID、时间、测试人\n- 验证明细：每步的命令、输出、判定\n- 汇总：全部 PASS exit 0，任一 FAIL exit 1\n- 证据日志：每条验证的实际终端输出",
+  "project_dir": "/home/sunzc/AIProjects/ai-briefing",
+  "files_to_read": [
+    "src/collector/ai_briefing_collector.py"
+  ],
+  "acceptance_criteria": "weekly 采集在 45s 内完成，daily 采集在 30s 内完成，items 不为空且结构正确",
+  "status": "done",
+  "result": {
+    "task_id": "test-verify-collector-fix",
+    "exit_code": 0,
+    "stdout_tail": "onds\": 5,\n+      \"timeout_limit\": 30,\n+      \"exit_code\": 0,\n+      \"judgment\": \"PASS\",\n+      \"evidence\": {\n+        \"output\": \"JSON 输出写入 /tmp/test_daily_output.json, 41 items\",\n+        \"stderr\": \"[warn] Twitter API error: 401 (预期行为, Twitter 未配置 keys)\"\n+      }\n+    },\n+    {\n+      \"step\": 3,\n+      \"name\": \"输出结构验证 — items 非空且字段完整\",\n+      \"command\": \"python3 -c '... json validation ...'\",\n+      \"details\": \"验证每个 item 包含 name, url, description, source 字段\",\n+      \"weekly_items\": 41,\n+      \"daily_items\": 41,\n+      \"field_errors\": [],\n+      \"judgment\": \"PASS\",\n+      \"evidence\": {\n+        \"weekly_structure\": \"41 items, 全部包含 name/url/description/source\",\n+        \"daily_structure\": \"41 items, 全部包含 name/url/description/source\"\n+      }\n+    },\n+    {\n+      \"step\": 4,\n+      \"name\": \"来源分布统计\",\n+      \"command\": \"python3 -c '... Counter(source for items) ...'\",\n+      \"weekly_source_distribution\": {\n+        \"GitHub\": 15,\n+        \"Hacker News\": 10,\n+        \"r/MachineLearning\": 8,\n+        \"r/LocalLLaMA\": 8\n+      },\n+      \"daily_source_distribution\": {\n+        \"GitHub\": 15,\n+        \"Hacker News\": 10,\n+        \"r/LocalLLaMA\": 8,\n+        \"r/MachineLearning\": 8\n+      },\n+      \"judgment\": \"PASS — 多源覆盖, 无单点故障\"\n+    }\n+  ],\n+  \"summary\": \"全部 4 项验证通过。weekly 采集 3s (限 45s), daily 采集 5s (限 30s), 均大幅低于超时门槛。输出结构完整, 多数据源正常。Twitter 401 为已知未配置密钥, 不影响功能。\",\n+  \"evidence_logs\": {\n+    \"step1_command\": \"cd /home/sunzc/AIProjects/ai-briefing && SECONDS=0; timeout 45 python3 src/collector/ai_briefing_collector.py weekly > /tmp/test_weekly_output.json 2>reports/tmp_weekly_stderr.log; echo \\\"EXIT_CODE=$?\\\"; echo \\\"DURATION=${SECONDS}s\\\"\",\n+    \"step1_output\": \"EXIT_CODE=0\\nDURATION=3s\",\n+    \"step2_command\": \"cd /home/sunzc/AIProjects/ai-briefing && SECONDS=0; timeout 30 python3 src/collector/ai_briefing_collector.py daily > /tmp/test_daily_output.json 2>reports/tmp_daily_stderr.log; echo \\\"EXIT_CODE=$?\\\"; echo \\\"DURATION=${SECONDS}s\\\"\",\n+    \"step2_output\": \"EXIT_CODE=0\\nDURATION=5s\",\n+    \"step3_validation\": \"WEEKLY: 41 items, all fields present ✓ | DAILY: 41 items, all fields present ✓\",\n+    \"step4_source_dist\": \"GitHub 15, Hacker News 10, r/MachineLearning 8, r/LocalLLaMA 8 (both modes)\"\n+  },\n+  \"sample_output_weekly_first_item\": {\n+    \"name\": \"vercel-labs/zerolang\",\n… omitted 6 diff line(s) across 1 additional file(s)/section(s)\n  ┊ 💻 preparing terminal…\n  ┊ 📋 preparing todo…\n  ┊ 💻 $         rm -f /home/sunzc/AIProjects/ai-briefing/reports/tmp_weekly_stderr.log /home/sunzc/AIProjects/ai-briefing/reports/tmp_daily_stderr.log /tmp/test_weekly_output.json /tmp/test_daily_output.json  0.2s\n  ┊ 📋 plan      6 task(s)  0.0s\n\n╭─ ⚕ Hermes ───────────────────────────────────────────────────────────────────╮\n    测试报告已写入 reports/test-verify-collector-001.report.json。\n    \n    一句话总结：全部 4 项验证 PASS — weekly 3s(限45s)、daily 5s(限30s) 均远低于超时门槛，各输出 41 条结构化 items，来源覆盖 GitHub/HN/Reddit 多源正常运行。\n╰──────────────────────────────────────────────────────────────────────────────╯\n",
+    "stderr_tail": "",
+    "duration_sec": 81.5,
+    "files_changed": "",
+    "completed_at": "2026-05-20 22:14:36"
+  },
+  "completed_at": "2026-05-20 22:14:36"
+}
