@@ -15,8 +15,13 @@ GATE="$2"
 check_requirement() {
     local req_dir="$INSTANCE_DIR/docs"
     local found=0
-    for f in "$INSTANCE_DIR"/{requirement,requirements,需求}.{md,txt,rst} "$INSTANCE_DIR"/docs/{requirement,requirements}.{md,txt} 2>/dev/null; do
-        [[ -f "$f" ]] && found=1 && break
+    local pat; local f
+    for pat in "$INSTANCE_DIR/requirement.md" "$INSTANCE_DIR/requirement.txt" "$INSTANCE_DIR/requirement.rst" \
+               "$INSTANCE_DIR/requirements.md" "$INSTANCE_DIR/requirements.txt" "$INSTANCE_DIR/requirements.rst" \
+               "$INSTANCE_DIR/需求.md" "$INSTANCE_DIR/需求.txt" "$INSTANCE_DIR/需求.rst" \
+               "$INSTANCE_DIR/docs/requirement.md" "$INSTANCE_DIR/docs/requirement.txt" \
+               "$INSTANCE_DIR/docs/requirements.md" "$INSTANCE_DIR/docs/requirements.txt"; do
+        [[ -f "$pat" ]] && found=1 && break
     done
     if [[ "$found" -eq 0 ]] && [[ -d "$req_dir" ]]; then
         local count
@@ -32,9 +37,14 @@ check_requirement() {
 }
 
 check_design() {
-    local found=0
-    for f in "$INSTANCE_DIR"/{design,方案,architecture,arch}.{md,txt,rst} "$INSTANCE_DIR"/docs/{design,architecture}.{md,txt} 2>/dev/null; do
-        [[ -f "$f" ]] && found=1 && break
+    local pat; local found=0
+    for pat in "$INSTANCE_DIR/design.md" "$INSTANCE_DIR/design.txt" "$INSTANCE_DIR/design.rst" \
+               "$INSTANCE_DIR/方案.md" "$INSTANCE_DIR/方案.txt" "$INSTANCE_DIR/方案.rst" \
+               "$INSTANCE_DIR/architecture.md" "$INSTANCE_DIR/architecture.txt" "$INSTANCE_DIR/architecture.rst" \
+               "$INSTANCE_DIR/arch.md" "$INSTANCE_DIR/arch.txt" "$INSTANCE_DIR/arch.rst" \
+               "$INSTANCE_DIR/docs/design.md" "$INSTANCE_DIR/docs/design.txt" \
+               "$INSTANCE_DIR/docs/architecture.md" "$INSTANCE_DIR/docs/architecture.txt"; do
+        [[ -f "$pat" ]] && found=1 && break
     done
     if [[ "$found" -eq 0 ]]; then
         echo "[gate-check] FAIL design: no design document found in $INSTANCE_DIR"
