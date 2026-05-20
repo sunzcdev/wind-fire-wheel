@@ -1,0 +1,18 @@
+{
+  "job_id": "regression-weekly-001",
+  "type": "test",
+  "project": "ai-briefing",
+  "project_dir": "/home/sunzc/AIProjects/ai-briefing",
+  "test_script": "tests/test_weekly_regression.sh",
+  "timeout_sec": 60,
+  "created_at": "2026-05-20 20:35:00",
+  "status": "done",
+  "result": {
+    "exit_code": 0,
+    "stdout": "=== 周报回归测试 2026-05-20 ===\n\nStep 1 — 采集\n  ✅ PASS 采集: 41 个项目（mode=weekly）\n\nStep 2 — HTML 渲染\n  ✅ PASS 渲染: 模板填充完成，无残留占位符\n  ℹ️ HTML 临时文件: /tmp/tmp.rdL2tec5Mj\n\nStep 3 — 邮件发送\n  ✅ PASS 发送: 邮件已发送至 sunzcdev@gmail.com\n  ℹ️ 主题: [回归测试] AI新玩意 周报测试 2026-05-20\n\n=== 周报回归测试报告 ===\n日期: 2026-05-20\n\n结果: 3 通过, 0 失败\n\n结果: ✅ 全部通过 (exit 0)\n",
+    "stderr": "",
+    "error": null,
+    "duration_sec": 3.9
+  },
+  "completed_at": "2026-05-20 20:29:56"
+}

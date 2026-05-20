@@ -1,38 +1,33 @@
 {
-  "template_version": "1.0.0",
+  "template_version": "2.2.0",
   "project_name": "ai-briefing",
   "project_type": "briefing",
   "status": "active",
   "description": "AI 新玩意简报系统 — 代码采集→LLM润色→Apple HTML→邮件推送→二次内化闭环",
   "members": {
-    "po": {"id": "孙振朝", "name": "孙振朝", "contact": "邮件/微信/飞书"},
-    "pm": {"id": "hermes", "name": "Hermes", "contact": "微信"},
-    "dev": {"id": "hermes", "name": "Hermes", "contact": "terminal + cron"},
-    "test": {"id": "hermes", "name": "Hermes", "contact": "终端验证"},
-    "ops": {"id": "cron", "name": "Cron Job", "contact": "系统定时器"}
+    "po": {
+      "id": "sunzc",
+      "name": "孙振朝",
+      "contact": "weixin"
+    },
+    "pm": {
+      "id": "hermes",
+      "name": "Hermes"
+    },
+    "dev": {
+      "id": "cc",
+      "name": "CC"
+    },
+    "test": {
+      "id": "automation",
+      "name": "Automation Test"
+    },
+    "ops": {
+      "id": "ops-daemon",
+      "name": "Ops Daemon"
+    }
   },
-  "project_info": {
-    "work_dir": "~/.hermes/scripts/",
-    "data_dir": "~/.hermes/data/ai_briefing/",
-    "collector_script": "~/.hermes/scripts/ai_briefing_collector.py",
-    "storage_script": "~/.hermes/scripts/ai_briefing_storage.py",
-    "template_file": "~/.hermes/scripts/ai_digest_template.html",
-    "send_script": "~/.hermes/scripts/send_ai_briefing.py",
-    "skill_file": "~/.hermes/skills/ai-briefing/SKILL.md",
-    "internalization_skill": "~/.hermes/skills/ai-briefing-internalization/SKILL.md",
-    "cron_job_id": "92f36b8cdd2d",
-    "email_from": "james.sun@qq.com",
-    "email_to": "sunzcdev@gmail.com",
-    "smtp_host": "smtp.qq.com:465",
-    "github_token_key": "github_token（读取 api_keys.json）"
-  },
-  "features": {
-    "采集": "代码采集（GitHub API + 免费源），LLM 仅做润色",
-    "二次内化": "未实现 — 需求已定义：采集用户标记→分析对用户/Hermes的好处→构建兴趣图谱→优化精选"
-  },
-  "current_gate": null,
-  "current_task": null,
-  "team_name": "无敌风火轮",
-  "created_at": "2026-05-20T14:00:00+08:00",
-  "updated_at": "2026-05-20T14:00:00+08:00"
+  "current_gate": "delivered",
+  "created_at": "2026-05-20",
+  "project_dir": "/home/sunzc/AIProjects/ai-briefing"
 }

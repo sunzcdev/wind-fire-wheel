@@ -1,0 +1,22 @@
+{
+  "task_id": "test-daemon-001",
+  "type": "dev",
+  "project": "ai-briefing",
+  "project_dir": "/home/sunzc/AIProjects/ai-briefing",
+  "prompt": "创建一个 tests/test_daemon_demo.py 文件，内容是打印 hello from dev daemon。不要 git commit。",
+  "files": [
+    "tests/test_daemon_demo.py"
+  ],
+  "acceptance": "文件存在且内容正确",
+  "created_at": "2026-05-20 20:30:00",
+  "status": "done",
+  "result": {
+    "exit_code": 0,
+    "stdout": "`tests/test_daemon_demo.py` 已创建，内容为打印 `hello from dev daemon`。\n",
+    "stderr": "",
+    "error": null,
+    "duration_sec": 17.3,
+    "files_changed": "src/collector/ai_briefing_collector.py | 99 ++++++++++++++++++++--------------\n 1 file changed, 60 insertions(+), 39 deletions(-)"
+  },
+  "completed_at": "2026-05-20 20:23:51"
+}
