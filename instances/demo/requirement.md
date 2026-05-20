@@ -1,14 +1,16 @@
 # Demo 项目需求
 
-## 目标
-测试风火轮小组 pipeline 全流程，验证 5 道 Gate 能否依次通过。
+## 功能描述
+编写一个 bash 脚本，扫描局域网内的活跃设备。
+
+## 详细要求
+- 自动检测当前局域网网段（从本机 IP + 子网掩码推算）
+- 用 ping 或 arp-scan 检测该网段内所有在线设备
+- 输出格式：IP 地址 → 主机名（如果有）→ MAC 地址
+- 脚本名为 `lan-scan.sh`，放在项目根目录
+- 可执行：`chmod +x lan-scan.sh`
 
 ## 验收标准
-1. 需求文档 → 通过 requirement gate
-2. 方案文档 → 通过 design gate
-3. 代码实现 → 通过 implementation gate
-4. 测试文件 → 通过 verification gate
-5. 交付物就绪 → 通过 delivery gate
-
-## 备注
-纯冒烟测试用途。
+1. 脚本能正常运行不报错（bash -n 语法检查通过）
+2. 输出包含至少本机信息
+3. 不硬编码网段
