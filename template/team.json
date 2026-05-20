@@ -1,13 +1,18 @@
 {
-  "template_version": "1.0.0",
+  "template_version": "3.0.0",
   "project_name": "template",
   "status": "template",
   "members": {
     "po": {"id": "need-to-set", "name": null, "contact": null},
     "pm": {"id": "hermes", "name": "Hermes"},
-    "dev": {"id": "cc", "name": "CC/OpenCode"},
-    "test": {"id": "automation", "name": "Automation Test"},
-    "ops": {"id": "hermes", "name": "Hermes (Ops)"}
+    "dev": {"id": "subagent", "name": "子 agent（hermes chat -q）"},
+    "test": {"id": "subagent", "name": "子 agent（hermes chat -q）"}
+  },
+  "agent_method": {
+    "type": "hermes-chat-q",
+    "script": "template/agents/subagent.py",
+    "model": "deepseek-v4-flash",
+    "notification": "notify_on_complete"
   },
   "current_gate": null,
   "created_at": null

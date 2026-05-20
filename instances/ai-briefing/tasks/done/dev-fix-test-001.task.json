@@ -1,0 +1,22 @@
+{
+  "task_id": "dev-fix-test-001",
+  "type": "dev",
+  "project": "ai-briefing",
+  "project_dir": "/home/sunzc/AIProjects/ai-briefing",
+  "prompt": "修复 tests/test_core_modules.sh 中 Step 1 的 JSON 解析问题，不改其他步骤，不 git commit。\n\n## 问题\n第 30 行 `timeout 30 python3 \"$REPO_ROOT/src/collector/ai_briefing_collector.py\" daily 2>&1` 把 stderr（采集器的 warning 日志）和 stdout（JSON 数据）混在一起。\n\n后面 Python 解析代码用 `raw.find('[')` 找 JSON 数组起始，但混入的 stderr 里 `[warn]` 的 `[` 被误当作了数组开始。\n\n## 修复\n改成只捕获 stdout，不要 2>&1。stderr 如果非空可以独立输出到屏幕上便于调试。\n\n## 验证方法\nbash tests/test_core_modules.sh 应该能正确跑完 Step 1（PASS），不报 \"no JSON array found\"。",
+  "files": [
+    "tests/test_core_modules.sh"
+  ],
+  "acceptance": "bash tests/test_core_modules.sh Step 1 PASS",
+  "created_at": "2026-05-20 21:15:00",
+  "status": "failed",
+  "result": {
+    "exit_code": 143,
+    "stdout": "",
+    "stderr": "",
+    "error": null,
+    "duration_sec": 138.8,
+    "files_changed": "src/collector/ai_briefing_collector.py | 99 ++++++++++++++++++++--------------\n 1 file changed, 60 insertions(+), 39 deletions(-)"
+  },
+  "completed_at": "2026-05-20 20:52:26"
+}

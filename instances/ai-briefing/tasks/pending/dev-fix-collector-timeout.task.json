@@ -1,0 +1,13 @@
+{
+  "task_id": "dev-fix-collector-timeout",
+  "type": "dev",
+  "role": "Python 后端开发者",
+  "prompt": "修复 ai-briefing 日报采集器的超时问题。\n\n问题描述：`collect_weekly()` 依次调用多个 API（GitHub × 2、Hacker News、Reddit × 2、TopHub），每个之间 time.sleep(1.5)，加上 socks5 代理（ALL_PROXY=socks5://127.0.0.1:1081）和 API 响应慢，总耗时超过 60s。\n\n重现命令：timeout 45 python3 src/collector/ai_briefing_collector.py weekly\n\n代码文件：\n- src/collector/ai_briefing_collector.py — 主采集器，含 collect_weekly() 和 _delay()\n- src/collector/constants.py — 超时配置等常量\n\n请执行以下步骤：\n1. 读 collector 代码，找到 _delay() 调用位置\n2. 收紧超时参数\n3. 减少 API 调用间的等待\n4. 验证修改后 `timeout 45 python3 src/collector/ai_briefing_collector.py weekly` 能跑完\n\n注意：只改超时和延迟相关的逻辑，不改采集逻辑本身。",
+  "skill_methodology": "【系统化调试方法论】\n\n记住铁律：先找根因，再修复。\n\nPhase 1 — 根因调查：\n- 读错误信息\n- 稳定复现问题\n- 检查最近改动\n- 追踪数据流找到根因\n\nPhase 2 — 模式分析：\n- 找代码库中类似的工作代码做对比\n- 找出工作代码和故障代码的差异\n\nPhase 3 — 假设验证：\n- 一次只改一个变量\n- 每次改完验证是否解决\n- 不搞多个改动一次打包\n\nPhase 4 — 实现修复：\n- 针对根因只做一次改动\n- 验证通过即完成\n\n每次只能改一个地方，不能用 \"while I'm here\" 顺手做其他优化。",
+  "project_dir": "/home/sunzc/AIProjects/ai-briefing",
+  "files_to_read": [
+    "src/collector/ai_briefing_collector.py",
+    "src/collector/constants.py"
+  ],
+  "acceptance_criteria": "timeout 45 python3 src/collector/ai_briefing_collector.py weekly 能在 45s 内跑完"
+}

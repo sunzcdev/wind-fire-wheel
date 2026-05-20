@@ -1,0 +1,14 @@
+{
+  "job_id": "core-modules-regression-001",
+  "test_script": "tests/test_core_modules.sh",
+  "passed": false,
+  "result": {
+    "exit_code": 1,
+    "stdout": "\n\u001b[0;36m\u001b[1mStep 1 — 采集模块\u001b[0m\n",
+    "stderr": "",
+    "error": null,
+    "duration_sec": 5.4
+  },
+  "ran_at": "2026-05-20 20:43:30",
+  "duration_sec": 5.4
+}

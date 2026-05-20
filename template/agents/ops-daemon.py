@@ -25,17 +25,20 @@ DAEMON_PIDS = {}  # {project: {role: pid}}
 def log(msg):
     print(f'[ops-daemon] {time.strftime("%H:%M:%S")} {msg}', flush=True)
 
-def find_daemon_pid(script_name):
-    """通过 ps aux 找运行中的 daemon 进程"""
+def find_daemon_pid(script_name, instance_dir=None):
+    """通过 ps aux 找特定实例的 daemon 进程"""
     try:
         out = subprocess.run(
             ['ps', 'aux'], capture_output=True, text=True, timeout=10
         ).stdout
         for line in out.split('\n'):
-            if script_name in line and 'python3' in line and 'grep' not in line:
-                parts = line.split()
-                if parts:
-                    return int(parts[1])
+            if script_name not in line or 'python3' not in line or 'grep' in line:
+                continue
+            if instance_dir and instance_dir not in line:
+                continue
+            parts = line.split()
+            if parts:
+                return int(parts[1])
     except Exception:
         pass
     return None
@@ -70,16 +73,16 @@ def check_instances():
             continue
 
         # 1. 检查 Dev daemon
-        dev_pid = find_daemon_pid(DAEMON_SCRIPTS['dev'])
-        if dev_pid is None or dev_pid != DAEMON_PIDS.get(f'{inst}/dev'):
+        dev_pid = find_daemon_pid(DAEMON_SCRIPTS['dev'], inst_dir)
+        if dev_pid is None:
             log(f'{inst}: Dev daemon 不在运行，启动...')
             pid = start_daemon('dev', inst_dir)
             if pid:
                 DAEMON_PIDS[f'{inst}/dev'] = pid
 
         # 2. 检查 Test daemon
-        test_pid = find_daemon_pid(DAEMON_SCRIPTS['test'])
-        if test_pid is None or test_pid != DAEMON_PIDS.get(f'{inst}/test'):
+        test_pid = find_daemon_pid(DAEMON_SCRIPTS['test'], inst_dir)
+        if test_pid is None:
             log(f'{inst}: Test daemon 不在运行，启动...')
             pid = start_daemon('test', inst_dir)
             if pid:

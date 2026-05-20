@@ -33,7 +33,15 @@ def main():
     while True:
         tasks = sorted(glob.glob(os.path.join(pending_dir, '*.task.json')))
         for task_path in tasks:
-            task = json.load(open(task_path))
+            try:
+                task = json.load(open(task_path))
+            except json.JSONDecodeError as e:
+                log(f'⚠️  JSON 解析失败: {os.path.basename(task_path)} — {e}')
+                # 移到 failed 目录
+                fail_dir = os.path.join(os.path.dirname(pending_dir), 'failed')
+                os.makedirs(fail_dir, exist_ok=True)
+                shutil.move(task_path, os.path.join(fail_dir, os.path.basename(task_path)))
+                continue
             task_id = task.get('task_id', os.path.basename(task_path))
             project_dir = task.get('project_dir', instance_dir)
             prompt = task.get('prompt', '')
