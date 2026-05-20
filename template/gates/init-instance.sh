@@ -37,18 +37,7 @@ echo "[init-instance] OK: created $INSTANCE_DIR"
 cp "$TEMPLATE_DIR/team.json" "$INSTANCE_DIR/team.json"
 echo "[init-instance] OK: copied team.json"
 
-# ── Step 3: interactive member config ─────────────────────────────────────────
-echo ""
-echo "[init-instance] Configure team members (press Enter to skip):"
-echo ""
-
-read -rp "  PO (Product Owner) name: " PO_NAME
-read -rp "  PO contact (email/slack): " PO_CONTACT
-read -rp "  Dev lead name: " DEV_NAME
-read -rp "  Dev contact (email/slack): " DEV_CONTACT
-read -rp "  QA / Test lead name: " TEST_NAME
-read -rp "  QA contact (email/slack): " TEST_CONTACT
-
+# ── Step 3: auto-fill team.json ───────────────────────────────────────────────
 TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S')"
 
 python3 - <<PYEOF
@@ -62,11 +51,8 @@ d['project_dir']    = '$PROJECT_DIR'
 d['current_gate']   = 'requirement'
 d['created_at']     = '$TIMESTAMP'
 
-d['members'] = {
-    'po':   {'name': '$PO_NAME',   'contact': '$PO_CONTACT'},
-    'dev':  {'name': '$DEV_NAME',  'contact': '$DEV_CONTACT'},
-    'test': {'name': '$TEST_NAME', 'contact': '$TEST_CONTACT'},
-}
+d['members']['po'] = {'id': 'sunzc', 'name': '孙振朝', 'contact': 'weixin'}
+# dev/test/ops 使用 template 默认值，无需修改
 
 with open('$INSTANCE_DIR/team.json', 'w') as f:
     json.dump(d, f, indent=2, ensure_ascii=False)
@@ -88,6 +74,6 @@ printf  "║  目录: %-37s║\n" "$INSTANCE_DIR"
 printf  "║  Gate: %-37s║\n" "requirement"
 echo "╠══════════════════════════════════════════════╣"
 echo "║  下一步 / Next:                               ║"
-echo "║    1. 添加 requirement.md 文档                ║"
-echo "║    2. 运行 dispatch.sh <instance_dir>         ║"
+echo "║    1. 在项目目录添加 requirement.md              ║"
+echo "║    2. auto-dispatch 会自动启动 pipeline           ║"
 echo "╚══════════════════════════════════════════════╝"
